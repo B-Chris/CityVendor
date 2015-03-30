@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.application.ncg.cityvendorlibrary" >
+
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <application>
+        <receiver
+            android:name=".services.GcmBroadcastReceiver"
+            android:permission="com.google.android.cd2m.permission.SEND" >
+            <intent-filter>
+                <action android:name="com.google.android.cd3m.intent.RECEIVE" />
+
+                <category android:name="com.application.ncg.cityvendorlibrary" />
+            </intent-filter>
+        </receiver>
+
+        <service android:name=".services.GcmIntentService" />
+        <service
+            android:name=".services.PhotoUploadService"
+            android:exported="false" />
+
+        <activity
+            android:name=".activities.GPSScanActivity"
+            android:label="@string/title_activity_gpsscan" >
+        </activity>
+    </application>
+
+</manifest>

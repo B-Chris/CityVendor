@@ -1,0 +1,78 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:id="@+id/container"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    tools:context="com.application.ncg.cityvendorappsuite.VendorActivity"
+    tools:ignore="MergeRootFrame" >
+
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:text="Name"
+        android:ems="10"
+        android:id="@+id/editName"
+        android:hint="Vendor Name"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:text="Surname"
+        android:ems="10"
+        android:id="@+id/editSurname"
+        android:layout_below="@+id/editName"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textEmailAddress"
+        android:text="Email"
+        android:ems="10"
+        android:id="@+id/editEmail"
+        android:layout_below="@+id/editSurname"
+        android:layout_alignParentStart="true"
+        android:layout_alignEnd="@+id/editSurname" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/editLatitude"
+        android:text="Latitude"
+        android:layout_below="@+id/editEmail"
+        android:layout_alignParentStart="true"
+        android:layout_alignEnd="@+id/editEmail" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/editLongitude"
+        android:text="Longitude"
+        android:layout_below="@+id/editLatitude"
+        android:layout_alignParentStart="true"
+        android:layout_alignEnd="@+id/editLatitude" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/editStreetAddress"
+        android:text="street Address"
+        android:layout_below="@+id/editLongitude"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Submit"
+        android:id="@+id/btn_submit"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentStart="true" />
+
+</RelativeLayout>
