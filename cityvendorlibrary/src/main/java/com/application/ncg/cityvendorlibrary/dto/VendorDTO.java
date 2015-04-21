@@ -15,7 +15,7 @@ import java.util.List;
  */
 public class VendorDTO implements Serializable {
     private static final long serialVersionUID = 1L;
-    private Integer vendorID, productsID;
+    private Integer vendorID, productsID, locationConfirmed;
     private String name;
     private String surname;
     private Double latitude;
@@ -23,12 +23,16 @@ public class VendorDTO implements Serializable {
     private String streetAddress;
     private String email;
     private ProductsDTO products;
+    private Float accuracy;
     private List<ConsumerVendorDTO> consumervendorList = new ArrayList<>();
+    private List<VendorSiteDTO> vendorsiteList;
 
     public VendorDTO() {
     }
 
-    public VendorDTO(Integer vendorID, Integer productsID, String name, String surname, Double latitude, Double longitude, String streetAddress, String email, ProductsDTO products, List<ConsumerVendorDTO> consumervendorList) {
+    public static final int CONFIRM_LOCATION = 52;
+
+    public VendorDTO(/*Integer vendorID, Integer productsID, */String name, String surname, Double latitude, Double longitude, String streetAddress, String email/*, ProductsDTO products, List<ConsumerVendorDTO> consumervendorList*/) {
         this.vendorID = vendorID;
         this.productsID = productsID;
         this.name = name;
@@ -37,8 +41,21 @@ public class VendorDTO implements Serializable {
         this.longitude = longitude;
         this.streetAddress = streetAddress;
         this.email = email;
+        this.accuracy = accuracy;
         this.products = products;
         this.consumervendorList = consumervendorList;
+    }
+
+    public VendorDTO(int confirmLocation) {
+
+    }
+
+    public Integer getLocationConfirmed() {
+        return locationConfirmed;
+    }
+
+    public void setLocationConfirmed(Integer locationConfirmed) {
+        this.locationConfirmed = locationConfirmed;
     }
 
     public Integer getVendorID() {
@@ -105,7 +122,13 @@ public class VendorDTO implements Serializable {
         this.email = email;
     }
 
+    public Float getAccuracy() {
+        return accuracy;
+    }
 
+    public void setAccuracy(Float accuracy) {
+        this.accuracy = accuracy;
+    }
 
     public List<ConsumerVendorDTO> getConsumervendorList() {
         return consumervendorList;
@@ -115,6 +138,14 @@ public class VendorDTO implements Serializable {
         this.consumervendorList = consumervendorList;
     }
 
+    public List<VendorSiteDTO> getVendorsiteList() {
+        return vendorsiteList;
+    }
+
+    public void setVendorsiteList(List<VendorSiteDTO> vendorsiteList) {
+        this.vendorsiteList = vendorsiteList;
+    }
+
     @Override
     public String toString() {
         return "VendorDTO{" +
@@ -122,10 +153,11 @@ public class VendorDTO implements Serializable {
                 ", productsID=" + productsID +
                 ", name='" + name + '\'' +
                 ", surname='" + surname + '\'' +
-                ", latitude=" + latitude +
-                ", longitude=" + longitude +
+            //    ", latitude=" + latitude +
+            //    ", longitude=" + longitude +
                 ", streetAddress='" + streetAddress + '\'' +
                 ", email='" + email + '\'' +
+                ", accuracy='" + accuracy + '\'' +
                 ", products=" + products +
                 ", consumervendorList=" + consumervendorList +
                 '}';

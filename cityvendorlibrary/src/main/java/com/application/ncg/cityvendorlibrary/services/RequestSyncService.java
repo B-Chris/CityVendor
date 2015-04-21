@@ -2,6 +2,28 @@ package com.application.ncg.cityvendorlibrary.services;
 
 import android.app.IntentService;
 import android.content.Intent;
+import android.os.Binder;
+import android.os.IBinder;
+import android.util.Log;
+
+import com.application.ncg.cityvendorlibrary.dto.transfer.RequestList;
+import com.application.ncg.cityvendorlibrary.dto.transfer.ResponseDTO;
+import com.application.ncg.cityvendorlibrary.util.CacheUtil;
+import com.application.ncg.cityvendorlibrary.util.ErrorUtil;
+import com.application.ncg.cityvendorlibrary.util.WebCheck;
+import com.application.ncg.cityvendorlibrary.util.WebCheckResult;
+import com.application.ncg.cityvendorlibrary.util.WebSocketUtilForRequests;
+import com.google.gson.Gson;
+
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Created by Chris on 2015-03-07.
@@ -11,10 +33,7 @@ public class RequestSyncService extends IntentService {
         super(name);
     }
 
-    @Override
-    protected void onHandleIntent(Intent intent) {
 
-    } /*
     static final String LOG = RequestSyncService.class.getSimpleName();
     int currentIndex;
     static final Gson gson = new Gson();
@@ -23,7 +42,7 @@ public class RequestSyncService extends IntentService {
 
 
     public interface RequestSyncListener {
-        public void onProductsSynced(int goodResponses, int badResponses);
+        public void onVendorSynced(int goodResponses, int badResponses);
         public void onError(String message);
     }
 
@@ -38,7 +57,7 @@ public class RequestSyncService extends IntentService {
         try{
             stream = getApplicationContext().openFileInput("requestCache.json");
             String json = getStringFromInputStream(stream);
-            RequestCache cache = gson.fomJson(json, RequestCache.class);
+            RequestCache cache = gson.fromJson(json, RequestCache.class);
             if (cache != null) {
                 requestCache = cache;
                 Log.i(LOG, "RequestCache returned from dis, with these entries: "
@@ -47,14 +66,14 @@ public class RequestSyncService extends IntentService {
                 controlRequestUpload();
             } else {
                 Log.e(LOG, "requestCache is null");
-                requestSyncListener.onProductsSynced(0, 0);
+                requestSyncListener.onVendorSynced(0, 0);
             }
         } catch (FileNotFoundException e) {
             Log.i(LOG, " FileNotFoundException, requestCache does not currently exist");
-            requestSyncListener.onProductsSynced(0, 0);
+            requestSyncListener.onVendorSynced(0, 0);
         } catch (Exception e) {
             Log.e(LOG, "having trouble with sync", e);
-            requestSyncListener.onProductsSynced(0, 0);
+            requestSyncListener.onVendorSynced(0, 0);
         }
 
     }
@@ -83,28 +102,29 @@ public class RequestSyncService extends IntentService {
             Log.i(LOG, "WIFI is connected and cached requests about to be sent to the cloud");
             RequestList list = new RequestList();
             for (RequestCacheEntry rce : requestCache.getRequestCacheEntryList()) {
-                list.getRequests().add(wcr.getRequest());
+                list.getRequests().add(rce.getRequest());
             }
             if (list.getRequests().isEmpty()) {
                 Log.d(LOG, "no requests have been cached");
-                requestSyncListener.onProductsSynced(0, 0);
+                requestSyncListener.onVendorSynced(0, 0);
                 return;
             }
             Log.w(LOG, "sending list of cached requests: " + list.getRequests().size());
-            WebSocketUtilForRequests.sendRequest(getApplicationContext(), list, new WebSocketUtilForRequests().WebSocketListener() {
+            WebSocketUtilForRequests.sendRequest(getApplicationContext(), list, new WebSocketUtilForRequests.WebSocketListener()
+            {
 
                 @Override
                 public void onMessage(ResponseDTO response) {
-                    if (!ErrorUtil.checkServerError(getApplicationContext(), repsonse)) {
+                    if (!ErrorUtil.checkServerError(getApplicationContext(), response)) {
                         return;
                     }
                     Log.i(LOG, "cached requests sent up. good responses" + response.getGoodCount() +
                     "bad responses:" + response.getBadCount());
                     for (RequestCacheEntry rce : requestCache.getRequestCacheEntryList()) {
-                        rce.setDateUploaded(new Date());
+                        rce.setDateUploaded((java.sql.Date) new Date());
                     }
                     cleanupCache();
-                    requestSyncListener.onProductsSynced(response.getGoodCount(), response.getBadCount);
+                    requestSyncListener.onVendorSynced(response.getGoodCount(), response.getBadCount());
 
                 }
                 @Override
@@ -129,7 +149,7 @@ public class RequestSyncService extends IntentService {
         }
         Log.i(LOG, "preparing cache cleanUp: " + list.size());
         requestCache.setRequestCacheEntryList(list);
-        CacheUtil.cacheRequest(getApplicationContext(), requestCache);
+        CacheUtil.cacheRequest(getApplicationContext(), requestCache, null);
     }
 
     private void print() {
@@ -154,9 +174,4 @@ public class RequestSyncService extends IntentService {
         onHandleIntent(null);
     }
 
-    public interface RequestSyncListener {
-        public void onProductsSynced(int goodResponses, int badResponses);
-        public void onError(String message);
-    }
-*/
 }

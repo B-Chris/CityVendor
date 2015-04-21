@@ -1,17 +1,21 @@
 package com.application.ncg.cityvendorappsuite;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.application.ncg.cityvendorappsuite.adapters.NotificationAdapter;
-import com.application.ncg.cityvendorlibrary.dto.VendorDTO;
 import com.application.ncg.cityvendorappsuite.providers.VendorsContentProviderUtils;
+import com.application.ncg.cityvendorlibrary.activities.MapsActivity;
+import com.application.ncg.cityvendorlibrary.dto.VendorDTO;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 import java.io.IOException;
@@ -22,47 +26,58 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class MainActivity extends ActionBarActivity {
 
     Context ctx;
-    private ListView AM_list;
+    private ListView VENDOR_LIST_list;
     private NotificationAdapter adapter;
-    List<VendorDTO> mVendor;
+    List<VendorDTO> mVendorList;
+    VendorAdaptor vendorAdaptor;
 
     GoogleCloudMessaging gcm;
     String gcmRegistrationId;
     AtomicInteger messageId = new AtomicInteger();
-
-
+    private Integer vendorID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_main_list);
         ctx = getApplicationContext();
-        AM_list = (ListView) findViewById(R.id.AM_list);
+        VENDOR_LIST_list = (ListView) findViewById(R.id.VENDOR_LIST_list);
 
-        if (mVendor == null){
-            mVendor = VendorsContentProviderUtils.getVendors(getContentResolver());
+        if (mVendorList == null){
+            mVendorList = VendorsContentProviderUtils.getVendors(getContentResolver());
+            Log.i(TAG, mVendorList +"");
         }
 
-        adapter = new NotificationAdapter(ctx, mVendor);
-        AM_list.setAdapter(adapter);
+        //adapter = new NotificationAdapter(ctx, mVendorList);
+        ctx = getApplicationContext();
+        vendorAdaptor = new VendorAdaptor(ctx, mVendorList);
+        VENDOR_LIST_list.setAdapter(vendorAdaptor);
+
+        VENDOR_LIST_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                VendorDTO ven = (VendorDTO) vendorAdaptor.getItem(position);
+                Intent i = new Intent(getApplicationContext(), VendorAdaptor.class);
+            }
+        });
     }
 
     /**
      *Method checking if gcm registration is done and if it isn't start registration
      */
+
     private void registerIfNotRegistered(){
         //checking if google play services exists
-      /*  Log.i(TAG, "register if there is no previous registration");
-        if (!=ImpulseGCMUtils.hasPlayServices(this) || currentUser ==null){
-            return;
-        }
-        */
+      //  Log.i(TAG, "register if there is no previous registration");
+       // if (!=VendorGCMUtils.hasPlayServices(this) || currentUser ==null){
+       //     return;
+       // }
+
         gcm = GoogleCloudMessaging.getInstance(this);
         gcmRegistrationId = VendorGCMUtils.getMyRegistrationId(this);
         if (gcmRegistrationId == null) {
             doInAsyncGCMRegistration();
         }
-
 
     }
 
@@ -101,18 +116,15 @@ public class MainActivity extends ActionBarActivity {
             protected void onPostExecute(Object o) {
                 super.onPostExecute(o);
                 //here we are done - we should register on server
-                if (VendorGCMUtils.getMyRegistrationId(ctx) != null) {
-                    VendorGCMUtils.registerVendorGCM(ctx, "chris@gmail.com", VendorGCMUtils.getMyRegistrationId(ctx), "CityVendor");
-                }
+          //      if (VendorGCMUtils.getMyRegistrationId(ctx) != null) {
+          //          VendorGCMUtils.registerVendorGCM(ctx, "chris@gmail.com", VendorGCMUtils.getMyRegistrationId(ctx), "CityVendor");
+          //      }
             }
 
 
         }.execute(null, null, null);
 
-
     }
-
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -130,6 +142,16 @@ public class MainActivity extends ActionBarActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            return true;
+        }
+        if(id == R.id.action_add) {
+            Intent i = new Intent(MainActivity.this, VendorActivity.class);
+            startActivity(i);
+            return true;
+        }
+        if (id == R.id.action_map) {
+            Intent i = new Intent(MainActivity.this, MapsActivity.class);
+            startActivity(i);
             return true;
         }
 

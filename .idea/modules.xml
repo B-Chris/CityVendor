@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Cityvendorappsuite.iml" filepath="$PROJECT_DIR$/Cityvendorappsuite.iml" />
+      <module fileurl="file://$PROJECT_DIR$/CityVendor.iml" filepath="$PROJECT_DIR$/CityVendor.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/cityvendorlibrary/cityvendorlibrary.iml" filepath="$PROJECT_DIR$/cityvendorlibrary/cityvendorlibrary.iml" />
     </modules>

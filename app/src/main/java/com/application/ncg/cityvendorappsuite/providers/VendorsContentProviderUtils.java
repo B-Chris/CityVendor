@@ -34,6 +34,7 @@ public class VendorsContentProviderUtils {
      * @return - list of Vendors
      */
     public static List<VendorDTO> getVendors(ContentResolver contentResolver){
+
         List<VendorDTO> vendors = new ArrayList<VendorDTO>();
         Cursor vendorsListCursor = contentResolver.query(VENDORS_CONTENT_URI, VendorsTable.DEFAULT_VENDORS_PROJECTIONS,null,null,VendorsTable.DEFAULT_SORT_ORDER);
         if(vendorsListCursor != null){
@@ -44,6 +45,7 @@ public class VendorsContentProviderUtils {
                 vendors.add(vendorDTO);
             }
         }
+
         return vendors;
     }
 
@@ -79,9 +81,9 @@ public class VendorsContentProviderUtils {
         String lat = cursor.getString(cursor.getColumnIndex(VendorsTable.COLUMN_LATITUDE));
         String lon = cursor.getString(cursor.getColumnIndex(VendorsTable.COLUMN_LONGITUDE));
         String globalVendorId = cursor.getString(cursor.getColumnIndex(VendorsTable.COLUMN_VENDOR_ID));
-        int id = cursor.getInt(cursor.getColumnIndex(VendorsTable.COLUMN_CP_VENDOR_ID));
+      //  int id = cursor.getInt(cursor.getColumnIndex(VendorsTable.COLUMN_CP_VENDOR_ID));
 
-        VendorDTO vendor = new VendorDTO(id, 0,  name,  surname, Double.parseDouble(lat), Double.parseDouble(lon), address,  email, null, null);
+        VendorDTO vendor = new VendorDTO(/*id, 0,*/  name,  surname, Double.parseDouble(lat), Double.parseDouble(lon), address,  email/*, null, null*/);
 
         return vendor;
     }

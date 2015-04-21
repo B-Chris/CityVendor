@@ -25,6 +25,7 @@ public class RequestDTO implements Serializable{
     private Boolean responseRequested, useHttp = false;
     private String email, name, pin, gcmRegistrationID;
     private Double latitude, longitude;
+    private Float accuracy;
     private ConsumerDTO consumer;
     private ConsumerVendorDTO consumerVendor;
     private ProductImageDTO productImage;
@@ -75,7 +76,9 @@ public class RequestDTO implements Serializable{
 
     public static final int
             LOGIN = 51,
-            SEND_GCM_REGISTRATION = 50;
+            SEND_GCM_REGISTRATION = 50,
+            CONFIRM_LOCATION = 52;
+
 
     public Integer getRequestType() {
         return requestType;
@@ -221,120 +224,12 @@ public class RequestDTO implements Serializable{
         this.vendor = vendor;
     }
 
-    public static int getRegisterConsumer() {
-        return REGISTER_CONSUMER;
-    }
-
-    public static int getRegisterVendor() {
-        return REGISTER_VENDOR;
-    }
-
-    public static int getAddProducts() {
-        return ADD_PRODUCTS;
-    }
-
-    public static int getAddProductImage() {
-        return ADD_PRODUCT_IMAGE;
-    }
-
-    public static int getAddProductsProductImage() {
-        return ADD_PRODUCTS_PRODUCT_IMAGE;
-    }
-
-    public static int getAddConsumerVendor() {
-        return ADD_CONSUMER_VENDOR;
-    }
-
-    public static int getUpdateConsumer() {
-        return UPDATE_CONSUMER;
-    }
-
-    public static int getUpdateConsumerVendor() {
-        return UPDATE_CONSUMER_VENDOR;
-    }
-
-    public static int getUpdateProductImage() {
-        return UPDATE_PRODUCT_IMAGE;
-    }
-
-    public static int getUpdateProducts() {
-        return UPDATE_PRODUCTS;
-    }
-
-    public static int getUpdateProductsProductImage() {
-        return UPDATE_PRODUCTS_PRODUCT_IMAGE;
-    }
-
-    public static int getUpdateVendor() {
-        return UPDATE_VENDOR;
-    }
-
-    public static int getRemoveConsumer() {
-        return REMOVE_CONSUMER;
-    }
-
-    public static int getRemoveConsumerVendor() {
-        return REMOVE_CONSUMER_VENDOR;
-    }
-
-    public static int getRemoveProductImage() {
-        return REMOVE_PRODUCT_IMAGE;
-    }
-
-    public static int getRemoveProducts() {
-        return REMOVE_PRODUCTS;
-    }
-
-    public static int getRemoveProductsProductImage() {
-        return REMOVE_PRODUCTS_PRODUCT_IMAGE;
-    }
-
-    public static int getRemoveVendor() {
-        return REMOVE_VENDOR;
-    }
-
-    public static int getGetConsumerByVendor() {
-        return GET_CONSUMER_BY_VENDOR;
-    }
-
-    public static int getGetConsumerVendor() {
-        return GET_CONSUMER_VENDOR;
-    }
-
-    public static int getGetProductImageByProduct() {
-        return GET_PRODUCT_IMAGE_BY_PRODUCT;
-    }
-
-    public static int getGetProducts() {
-        return GET_PRODUCTS;
-    }
-
-    public static int getGetAllProductsProductImage() {
-        return GET_ALL_PRODUCTS_PRODUCT_IMAGE;
-    }
-
-    public static int getGetVendor() {
-        return GET_VENDOR;
-    }
-
-    public static int getGetConsumer() {
-        return GET_CONSUMER;
-    }
-
     public String getGcmRegistrationID() {
         return gcmRegistrationID;
     }
 
     public void setGcmRegistrationID(String gcmRegistrationID) {
         this.gcmRegistrationID = gcmRegistrationID;
-    }
-
-    public GcmDeviceDTO getGcmDevice() {
-        return gcmDevice;
-    }
-
-    public void setGcmDevice(GcmDeviceDTO gcmDevice) {
-        this.gcmDevice = gcmDevice;
     }
 
     public Boolean getResponseRequested() {
@@ -345,6 +240,14 @@ public class RequestDTO implements Serializable{
         this.responseRequested = responseRequested;
     }
 
+    public Float getAccuracy() {
+        return accuracy;
+    }
+
+    public void setAccuracy(Float accuracy) {
+        this.accuracy = accuracy;
+    }
+
     public Boolean getUseHttp() {
         return useHttp;
     }
@@ -353,11 +256,7 @@ public class RequestDTO implements Serializable{
         this.useHttp = useHttp;
     }
 
-    public static int getLogin() {
-        return LOGIN;
-    }
-
-    public static int getSendGcmRegistration() {
-        return SEND_GCM_REGISTRATION;
+    public static int getConfirmLocation() {
+        return CONFIRM_LOCATION;
     }
 }

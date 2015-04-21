@@ -1,0 +1,201 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    tools:context="com.application.ncg.cityvendorappsuite.GPSScanActivity">
+<!--android:id="@+id/GPS_SCAN"-->
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/gps_satelite_1"
+        android:id="@+id/GPS_HEAD_img"/>
+
+    <RelativeLayout
+        android:layout_below="@+id/GPS_HEAD_img"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/GPS_Layout_1">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Vendor Site"
+            android:id="@+id/GPS_vendorSite"
+            android:textSize="40dp"
+            android:layout_marginLeft="90dp"/>
+
+        <TextView
+            android:layout_margin="20dp"
+            android:id="@+id/GPStxt_Accuracy"
+            android:layout_marginTop="20dp"
+            android:layout_below="@+id/GPS_vendorSite"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Desired GPS Accuracy:"/>
+
+        <RelativeLayout
+            android:layout_below="@+id/GPStxt_Accuracy"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="10"
+                android:textSize="25dp"
+                android:id="@+id/GPS_desiredAccuracy"/>
+
+            <SeekBar
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/GPS_seekBar"
+                android:layout_toRightOf="@+id/GPS_desiredAccuracy"
+                android:layout_marginLeft="10dp"
+                android:progress="25"
+                android:max="50"/>
+
+            </RelativeLayout>
+        </RelativeLayout>
+
+    <LinearLayout
+        android:layout_below="@+id/GPS_Layout_1"
+        android:id="@+id/GPS_Layout_2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/txt_lat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Latitude:"
+            android:textSize="20dp"
+            android:layout_marginLeft="10dp"/>
+
+        <TextView
+            android:layout_marginLeft="175dp"
+            android:id="@+id/txt_lng"
+            android:text="Longitude:"
+            android:textSize="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/GPS_Coordinates"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/GPS_Layout_2"
+        android:orientation="horizontal">
+
+        <TextView
+           android:layout_marginLeft="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/GPS_latitude"
+            android:text="00.00000"
+            android:textSize="20dp"/>
+
+        <TextView
+            android:layout_marginLeft="175dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/GPS_longitude"
+            android:text="00.00000"
+            android:textSize="20dp"/>
+        </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/GPS_Acc"
+        android:layout_below="@+id/GPS_Coordinates"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+     <RelativeLayout
+            android:id="@+id/GPS_Accuracy_Layout"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/GPS_txtAccuracy"
+                android:text="Accuracy: "
+                android:textSize="20dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginBottom="10dp"/>
+
+
+        <RelativeLayout
+
+                android:id="@+id/GPS_elapsedLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+
+</RelativeLayout>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Start Scan"
+        android:id="@+id/btn_scan"
+        android:layout_above="@+id/btn_save"
+        android:layout_alignParentStart="true" />
+
+    <Button
+        android:id="@+id/btn_save"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Save"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="0.00"
+        android:textSize="30dp"
+        android:layout_marginLeft="8dp"
+        android:id="@+id/GPS_accuracy"
+        android:layout_below="@+id/GPS_Acc"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:id="@+id/GPS_Measure"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:text="Measured in meteres"
+        android:textSize="15dp"
+        android:layout_alignTop="@+id/GPS_chronometer"
+        android:layout_toStartOf="@+id/btn_save" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Elapsed Time in Seconds:"
+        android:textSize="15dp"
+        android:id="@+id/textView"
+        android:layout_below="@+id/GPS_Acc"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="63dp" />
+
+    <Chronometer
+        android:id="@+id/GPS_chronometer"
+        android:layout_marginLeft="50dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="10dp"
+        android:textSize="30dp"
+        android:layout_below="@+id/textView"
+        android:layout_alignEnd="@+id/textView"
+        android:layout_marginEnd="67dp" />
+
+
+</RelativeLayout>

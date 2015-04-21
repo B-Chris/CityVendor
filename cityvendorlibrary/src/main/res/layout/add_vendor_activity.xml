@@ -1,16 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/beige"
     android:id="@+id/ADD_VLayout">
 
-    <ImageView
+
+    <RelativeLayout
         android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:id="@+id/Pin_line"
+        android:background="@color/beige"/>
+    <ImageView
+        android:layout_below="@+id/Pin_line"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/vendor_banner_1"
+        android:id="@+id/HEAD_img"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true" />
+
+    <LinearLayout
+        android:layout_below="@+id/HEAD_img"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/beige"
+        android:id="@+id/LINEAR_lay">
+
+        <ImageView
+        android:layout_width="125dp"
         android:layout_height="150dp"
         android:id="@+id/V_img"
-        android:layout_alignParentEnd="true"
-        android:src="@drawable/ic_action_person"/>
+        android:src="@drawable/ic_action_person"
+        android:layout_below="@+id/HEAD_img"
+        android:layout_alignParentStart="true" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Vendor List"
+            android:id="@+id/btn_Vlist"
+            style="@style/BlueButton"
+            />
+
+    </LinearLayout>
+
 
     <EditText
         android:layout_width="match_parent"
@@ -19,7 +55,7 @@
         android:ems="10"
         android:id="@+id/editName"
         android:hint="Vendor Name"
-        android:layout_below="@+id/V_img"
+        android:layout_below="@+id/LINEAR_lay"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true" />
 
@@ -33,10 +69,22 @@
         android:layout_alignParentEnd="true" />
 
     <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/location"
+        style="@style/BlueButton"
+        android:id="@+id/btn_location"
+        android:layout_margin="5dp"
+        android:layout_above="@+id/btn_submit"
+        android:layout_alignParentStart="true" />
+
+    <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Submit"
         android:id="@+id/btn_submit"
+        style="@style/BlueButton"
+        android:layout_margin="5dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentStart="true" />
@@ -58,23 +106,23 @@
         android:layout_below="@+id/editEmail"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true" />
-<!--
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/editLatitude"
-        android:hint="Latitude"
-        android:layout_below="@+id/editStreetAddress"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true" />
 
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/editLongitude"
-        android:hint="Longitude"
-        android:layout_below="@+id/editLatitude"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true" />
--->
+          <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/editLatitude"
+            android:hint="Latitude"
+            android:layout_below="@+id/editStreetAddress"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true" />
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/editLongitude"
+            android:hint="Longitude"
+            android:layout_below="@+id/editLatitude"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true" />
+
 </RelativeLayout>

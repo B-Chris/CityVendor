@@ -2,21 +2,49 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.application.ncg.cityvendorlibrary" >
 
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
+    <!--
+ The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
+         Google Maps Android API v2, but are recommended.
+    -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
+
     <application>
-        <receiver android:name=".services.GcmBroadcastReceiver"
-            android:permission="com.google.android.cd2m.permission.SEND">
-
+        <receiver
+            android:name=".services.GcmBroadcastReceiver"
+            android:permission="com.google.android.cd2m.permission.SEND" >
             <intent-filter>
-                <action android:name="com.google.android.cd3m.intent.RECEIVE"/>
-                <category android:name="com.application.ncg.cityvendorlibrary"/>
+                <action android:name="com.google.android.cd2m.intent.RECEIVE" />
+
+                <category android:name="com.application.ncg.cityvendorlibrary" />
             </intent-filter>
-            </receiver>
+        </receiver>
 
-    <service android:name="com.application.ncg.cityvendorlibrary.services.GcmIntentService"/>
+        <activity
+            android:name=".activities.GPSScanActivity"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme">
 
-    <service android:name="com.application.ncg.cityvendorlibrary.services.PhotoUploadService"
-        android:exported="false"/>
+            </activity>
+
+        <service
+            android:name="com.application.ncg.cityvendorlibrary.services.RequestSyncService"
+            android:exported="false"/>
+
+        <services android:name="com.application.ncg.cityvendorlibrary.services.GcmIntentService"/>
+        <activity
+            android:name=".activities.MapsActivity"
+            android:label="@string/title_activity_maps" >
+        </activity>
+
+
+
     </application>
 
 </manifest>

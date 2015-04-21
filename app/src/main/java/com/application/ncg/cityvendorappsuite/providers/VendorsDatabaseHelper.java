@@ -16,13 +16,13 @@ public class VendorsDatabaseHelper extends SQLiteOpenHelper {
     }
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-        //here we call the table oncreate
+        //here we call the table onCreate
         VendorsTable.onCreate(sqLiteDatabase);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i2) {
-        //here we call table onupgrade
+        //here we call table on upgrade
         VendorsTable.onUpgrade(sqLiteDatabase);
     }
 }

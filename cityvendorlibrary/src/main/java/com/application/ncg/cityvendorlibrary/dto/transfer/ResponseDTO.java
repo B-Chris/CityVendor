@@ -10,7 +10,8 @@ import com.application.ncg.cityvendorlibrary.dto.ConsumerVendorDTO;
 import com.application.ncg.cityvendorlibrary.dto.ProductImageDTO;
 import com.application.ncg.cityvendorlibrary.dto.ProductsProductImageDTO;
 import com.application.ncg.cityvendorlibrary.dto.VendorDTO;
-import com.application.ncg.cityvendorlibrary.util.bean.PhotoCache;
+import com.application.ncg.cityvendorlibrary.dto.VendorSiteDTO;
+import com.application.ncg.cityvendorlibrary.util.PhotoCache;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -37,6 +38,7 @@ public class ResponseDTO implements Serializable{
     private List<VendorDTO> vendorList = new ArrayList<>();
     private List<ConsumerDTO> consumerList = new ArrayList<>();
     private List<PhotoUploadDTO> photouploadList = new ArrayList<>();
+    private List<VendorSiteDTO> vendorsiteList = new ArrayList<>();
     private VendorDTO vendor;
 
     public Integer getStatusCode() {

@@ -19,13 +19,9 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 /**
- * Created by Chris on 2015-03-07.
+ * Created by Chris on 2015-03-31.
  */
 public class BohaRequest extends Request<ResponseDTO> {
-    public BohaRequest(String url, Response.ErrorListener listener) {
-        super(url, listener);
-    }
-
 
     private Response.Listener<ResponseDTO> listener;
     private Response.ErrorListener errorListener;
@@ -35,72 +31,63 @@ public class BohaRequest extends Request<ResponseDTO> {
         super(method, url, listener);
     }
 
-    public BohaRequest(int method, String url,  Response.Listener<ResponseDTO> responseListener,
-                       Response.ErrorListener errorListener) {
+    public BohaRequest(int method, String url, Response.Listener<ResponseDTO> responseListener, Response.ErrorListener errorListener){
         super(method, url, errorListener);
         this.listener = responseListener;
         this.errorListener = errorListener;
         start = System.currentTimeMillis();
-        Log.i(LOG, "Cloud Server communication has now began");
-
+        Log.i(LOG, "Cloud Server communication started");
     }
 
-
     @Override
-    protected Response<ResponseDTO> parseNetworkResponse(NetworkResponse response) {
+    protected Response<ResponseDTO> parseNetworkResponse(NetworkResponse
+         response) {
         ResponseDTO dto = new ResponseDTO();
-        try{
+        try {
             Gson gson = new Gson();
             String resp = new String(response.data);
-            Log.i(LOG, "response string length returned:" + resp.length());
-            try {
-                dto = gson.fromJson(resp, ResponseDTO.class);
-                if (dto != null) {
-                    return Response.success(dto,
-                            HttpHeaderParser.parseCacheHeaders(response));
-                }
-            } catch(Exception e) {
-                Log.i(LOG, "zipped response something happened", e);
-            }
+            Log.i(LOG, "response string length returned: " + resp.length());
 
             InputStream is = new ByteArrayInputStream(response.data);
             ZipInputStream zis = new ZipInputStream(is);
+        //    @SuppressWarnings("unused");
             ZipEntry entry;
-            ByteArrayBuffer bab = new ByteArrayBuffer(2020);
+            ByteArrayBuffer bab = new ByteArrayBuffer(2048);
 
             while ((entry = zis.getNextEntry()) != null) {
                 int size = 0;
-                byte[] buffer = new byte[2020];
+                byte[] buffer = new byte[2048];
                 while((size = zis.read(buffer, 0, buffer.length)) != -1) {
-                    bab.append(buffer, 0, size);
+                     bab.append(buffer, 0, size);
                 }
                 resp = new String(bab.toByteArray());
                 dto = gson.fromJson(resp, ResponseDTO.class);
             }
 
-        } catch(Exception e) {
-            VolleyError ve = new VolleyError("Exception parsing server data", e);
+        } catch (Exception e) {
+            VolleyError ve = new VolleyError("Exception paring server data", e);
             errorListener.onErrorResponse(ve);
-            Log.e(LOG, "Unable to complete request: " + dto.getMessage(), e);
+            Log.e(LOG, "Unable to complete request: " + dto.getMessage());
             return Response.error(new VolleyError(dto.getMessage()));
         }
         end = System.currentTimeMillis();
-        Log.e(LOG, "comms elapsed time in seconds: " + getElapsed(start, end));
-        return Response.success(dto, HttpHeaderParser.parseCacheHeaders(response));
+        Log.e(LOG, "comms elapsed time in seconds: " + getElapsed(start,end));
 
+        return Response.success(dto,
+                HttpHeaderParser.parseCacheHeaders(response));
     }
 
     @Override
     protected void deliverResponse(ResponseDTO response) {
         end = System.currentTimeMillis();
         listener.onResponse(response);
-
     }
+
     public static double getElapsed(long start, long end) {
-        BigDecimal bd = new BigDecimal(end - start).divide(new BigDecimal(1000));
-        return bd.doubleValue();
+        BigDecimal m = new BigDecimal(end - start).divide(new BigDecimal(1000));
+        return m.doubleValue();
     }
 
-    static final String LOG = BohaRequest.class.getSimpleName();
+    static final String LOG = "BohaRequest";
 
 }
