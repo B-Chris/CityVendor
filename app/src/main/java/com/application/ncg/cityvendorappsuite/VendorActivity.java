@@ -1,14 +1,12 @@
 package com.application.ncg.cityvendorappsuite;
 
 import android.app.Activity;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.location.Location;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -16,14 +14,16 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.application.ncg.cityvendorappsuite.providers.VendorsContentProviderUtils;
 import com.application.ncg.cityvendorlibrary.R;
 import com.application.ncg.cityvendorlibrary.activities.GPSScanActivity;
-import com.application.ncg.cityvendorlibrary.activities.MapsActivity;
+import com.application.ncg.cityvendorlibrary.dto.GcmDeviceDTO;
 import com.application.ncg.cityvendorlibrary.dto.VendorDTO;
 import com.application.ncg.cityvendorlibrary.dto.VendorSiteDTO;
 import com.application.ncg.cityvendorlibrary.services.RequestSyncService;
+import com.application.ncg.cityvendorlibrary.util.GCMUtil;
+import com.application.ncg.cityvendorlibrary.util.SharedUtil;
 import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
@@ -33,14 +33,13 @@ GoogleApiClient.OnConnectionFailedListener{
 
     public static final String LOCATION_KEY = "http://10.50.75.35:8080/cvp/";
     VendorDTO vendor;
+    GcmDeviceDTO gcmDevice;
     VendorSiteDTO vendorSite;
     Button btn_submit, btn_location, btn_Vlist;
     TextView tvtName;
     TextView txtSurname;
     TextView txtEmail;
     TextView txtAddress;
-    TextView txtLat;
-    TextView txtLon;
     ImageView HEAD_image, V_img;
     Context context;
     private GoogleApiClient mGoogleApiClient;
@@ -66,8 +65,6 @@ GoogleApiClient.OnConnectionFailedListener{
         txtSurname = (TextView) findViewById(R.id.editSurname);
         txtEmail = (TextView) findViewById(R.id.editEmail);
         txtAddress = (TextView) findViewById(R.id.editStreetAddress);
-        txtLat = (TextView) findViewById(R.id.editLatitude);
-        txtLon = (TextView) findViewById(R.id.editLongitude);
 
         btn_Vlist.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -83,8 +80,7 @@ GoogleApiClient.OnConnectionFailedListener{
 
                  Intent i = new Intent(VendorActivity.this, GPSScanActivity.class);
                  startActivity(i);
-                //  startGPSScanFragment();
-                //startGPSDialog();
+
 
             }
         });
@@ -108,14 +104,7 @@ GoogleApiClient.OnConnectionFailedListener{
                     ToastUtil.toast(VendorActivity.this, "StreetAddress field is empty, please fill in Vendor StreetAddress");
                     return;
                 }
-                if (txtLat.getText() == null) {
-                    ToastUtil.toast(VendorActivity.this, "Latitude field is empty, please fill in Vendor Latitude");
-                    return;
-                }
-                if (txtLon.getText() == null) {
-                    ToastUtil.toast(VendorActivity.this, "Longitude field is empty, please fill in Vendor Longitude");
-                    return;
-                }
+
                 if (tvtName.getText() == null) {
                     ToastUtil.toast(VendorActivity.this, "Name field is empty, please fill in Vendor name");
                     return;
@@ -129,12 +118,10 @@ GoogleApiClient.OnConnectionFailedListener{
                 String surname = txtSurname.getText().toString();
                 String email = txtEmail.getText().toString();
                 String streetAddress = txtAddress.getText().toString();
-                String lat = txtLat.getText().toString();
-                String lon = txtLon.getText().toString();
 
 
                 //now instantiate the VendorDTO
-                VendorDTO vendorDTO = new VendorDTO(/*null,0,*/name,surname,Double.parseDouble(lat),Double.parseDouble(lon),streetAddress, email/*, null, null*/);
+                VendorDTO vendorDTO = new VendorDTO(/*null,*/name,surname,streetAddress, email);
 
                 if( vendorDTO == null) {
                     Toast.makeText(context, "fields are empty, please fill in fields", Toast.LENGTH_SHORT).show();
@@ -144,15 +131,15 @@ GoogleApiClient.OnConnectionFailedListener{
 
                 //add this to CP
 
-               Uri uri = VendorsContentProviderUtils.addVendor(getContentResolver(), vendorDTO);
-                if (uri != null){
-             //   VendorGCMUtils.registerVendorGCM(context, email, VendorGCMUtils.getMyRegistrationId(context), getResources().getString(R.string.app_name));
+              // Uri uri = VendorsContentProviderUtils.addVendor(getContentResolver(), vendorDTO);
+             //   if (uri != null){
+           //     VendorGCMUtils.registerVendorGCM(context, email, VendorGCMUtils.getMyRegistrationId(context), getResources().getString(R.string.app_name));
 
-            }
+        //    }
 
             }
         });
-
+        registerGCMDevice();
         cleanPage();
     }
 
@@ -161,95 +148,80 @@ GoogleApiClient.OnConnectionFailedListener{
         txtSurname.setText(" ");
         txtEmail.setText(" ");
         txtAddress.setText(" ");
-//        txtLon.setText(0);
-//        txtLat.setText(0);
+
    //     vendorSite = new VendorSiteDTO();
     }
 
-
-
-
-
-
-    public void onStartScanRequested() {
-    getGPSCoordinates();
-    }
     private Integer vendorID;
 
-
-    public void onLocationConfirmed(VendorSiteDTO vs) {
-        Log.w(LOG, "GPSScannerDialog will now try to confirm location for vendorSite");
-        vendorSite = new VendorSiteDTO();
-        vendorSite.setLocationConfirmed(1);
-        vendorSite.setLongitude(vs.getLongitude());
-        vendorSite.setLatitude(vs.getLatitude());
-        vendorSite.setAccuracy(vs.getAccuracy());
-        vendorSite.setVendorID(vendorID);
-        Log.w(LOG, "Vendor site has been created");
-        //gpsScanActivity.dismiss();
-        stopPeriodUpdates();
-
-    }
-
-
-    public void onEndScanRequested() {
-    Log.w(LOG, "onEndScanRequested");
-        getGPSCoordinates();
-        stopPeriodUpdates();
-    }
-
     static final int MAP_REQUESTED = 9008;
-
-    public void onMapRequested(VendorSiteDTO vendorSite) {
-     if (vendorSite.getLatitude() != 0) {
-         Intent i = new Intent(context, MapsActivity.class);
-         i.putExtra("vendorSite", vendorSite);
-         startActivityForResult(i, MAP_REQUESTED);
-     }
-    }
-
-    private void getGPSCoordinates() {
-
-        if (!mGoogleApiClient.isConnected()) {
-            mGoogleApiClient.connect();
-        }
-
-        mCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-        mLocationRequest = LocationRequest.create();
-        mLocationRequest.setInterval(1000);
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        mLocationRequest.setFastestInterval(1000);
-
-        try {
-           LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, (com.google.android.gms.location.LocationListener) this);
-        } catch (IllegalStateException e) {
-            Log.e(LOG, "mGoogleClient. requestLocationUpdates ILLEGAL STATE", e);
-        }
-    }
-
-    private void stopPeriodUpdates() {
-        LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, (com.google.android.gms.location.LocationListener) this);
-        Log.e(LOG, "stopPeriodicUpdates - removingLocationUpdates");
-    }
 
     @Override
     public void onStart() {
     super.onStart();
     Log.i(LOG, "onStart, binding RequestSyncService");
         Intent requestIntent = new Intent(this, RequestSyncService.class);
-        bindService(requestIntent, mConnection, Context.BIND_AUTO_CREATE);
+      //  bindService(requestIntent, mConnection, Context.BIND_AUTO_CREATE);
     if (mGoogleApiClient != null) {
         mGoogleApiClient.connect();
         Log.i(LOG, "onStart - GoogleApiClient is connecting");
     }
 
 }
+
+    private void registerGCMDevice() {
+        boolean ok = checkPlayServices();
+
+        if (ok) {
+            Log.e(LOG, "############# Starting Google Cloud Messaging registration");
+            GCMUtil.startGCMRegistration(getApplicationContext(), new GCMUtil.GCMUtilListener() {
+                @Override
+                public void onDeviceRegistered(String id) {
+                    Log.e(LOG, "############# GCM - we cool, cool.....: " + id);
+                    SharedUtil.storeRegistrationId(context, id);
+                    gcmDevice = new GcmDeviceDTO();
+                    gcmDevice.setManufacturer(Build.MANUFACTURER);
+                    gcmDevice.setModel(Build.MODEL);
+                    gcmDevice.setSerialNumber(Build.SERIAL);
+                    gcmDevice.setProduct(Build.PRODUCT);
+                    gcmDevice.setAndroidVersion(Build.VERSION.RELEASE);
+                    //gcmDevice.setRegistrationID(id);
+
+
+                }
+
+                @Override
+                public void onGCMError() {
+                    Log.e(LOG, "############# onGCMError --- we got GCM problems");
+
+                }
+            });
+        }
+    }
+
+    public boolean checkPlayServices() {
+        Log.w(LOG, "checking GooglePlayServices .................");
+        int resultCode = GooglePlayServicesUtil
+                .isGooglePlayServicesAvailable(context);
+        if (resultCode != ConnectionResult.SUCCESS) {
+            if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
+                // GooglePlayServicesUtil.getErrorDialog(resultCode, this,
+                //         PLAY_SERVICES_RESOLUTION_REQUEST).show();
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=com.google.android.gms")));
+                return false;
+            } else {
+                Log.i(LOG, "This device is not supported.");
+                throw new UnsupportedOperationException("GooglePlayServicesUtil resultCode: " + resultCode);
+            }
+        }
+        return true;
+    }
     @Override
     public void onStop() {
         Log.d(LOG, "FIRED >>> onStop");
         if (mGoogleApiClient != null) {
             if (mGoogleApiClient.isConnected()) {
-                stopPeriodUpdates();
+
             }
             //disconnecting client
             mGoogleApiClient.disconnect();
@@ -258,7 +230,7 @@ GoogleApiClient.OnConnectionFailedListener{
         }
         try {
             if (mBound) {
-                unbindService(mConnection);
+            //    unbindService(mConnection);
                 mBound = false;
             }
         } catch (Exception e) {
@@ -268,6 +240,7 @@ GoogleApiClient.OnConnectionFailedListener{
     }
     RequestSyncService mService;
 
+    /*
     private ServiceConnection mConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName className, IBinder service) {
@@ -297,7 +270,7 @@ GoogleApiClient.OnConnectionFailedListener{
             mBound = false;
         }
         };
-
+*/
 
 
 public void onLocationChanged(Location loc) {
